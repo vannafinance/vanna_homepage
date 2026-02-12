@@ -15,7 +15,9 @@
       "WebFetch(domain:icons.llamao.fi)",
       "WebFetch(domain:defillama.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "WebFetch(domain:seekvectors.com)"
+      "WebFetch(domain:seekvectors.com)",
+      "Bash(timeout 20 npx remotion:*)",
+      "Bash(timeout 25 npx remotion:*)"
     ]
   }
 }

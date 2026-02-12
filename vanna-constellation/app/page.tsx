@@ -10,7 +10,6 @@ export default function Home() {
   return (
     <main className="min-h-screen" style={{ overflowX: "clip" }}>
       <Navbar />
-
       <HeroReactor />
       <HowItWorksSection />
       <ConstellationSection />
