@@ -26,7 +26,7 @@ interface YieldBar {
 const yieldBars: YieldBar[] = [
   { label: 'Borrow Interest', value: 12.5, maxValue: 20, suffix: '% APR', color: '#703AE6' },
   { label: 'Liquidation Fees', value: 2.5, maxValue: 20, suffix: '%', color: '#FC5457' },
-  { label: 'Revenue Share', value: 3.0, maxValue: 20, suffix: '%', color: '#32EEE2' },
+  { label: 'Revenue Share', value: 3.0, maxValue: 20, suffix: '%', color: '#3B82F6' },
 ];
 
 const comparisonData = [
@@ -102,7 +102,7 @@ function VaultVisual({ isInView }: { isInView: boolean }) {
       <motion.div
         className="relative w-64 h-64 rounded-full flex items-center justify-center"
         style={{
-          background: 'conic-gradient(from 0deg, #703AE640, #FC545730, #32EEE230, #703AE640)',
+          background: 'conic-gradient(from 0deg, #703AE640, #FC545730, #3B82F630, #703AE640)',
           border: '2px solid rgba(112, 58, 230, 0.3)',
         }}
         initial={{ scale: 0.8, opacity: 0, rotate: -30 }}
@@ -142,7 +142,7 @@ function VaultVisual({ isInView }: { isInView: boolean }) {
             style={{
               background: i % 2 === 0
                 ? 'linear-gradient(135deg, #703AE6, #9F7BEE)'
-                : 'linear-gradient(135deg, #32EEE2, #5AF5E9)',
+                : 'linear-gradient(135deg, #3B82F6, #5AF5E9)',
               color: 'white',
               top: `${50 + 42 * Math.sin((angle * Math.PI) / 180)}%`,
               left: `${50 + 42 * Math.cos((angle * Math.PI) / 180)}%`,
@@ -299,10 +299,10 @@ export default function YieldVaultSection() {
                   </span>
                   <span className="text-body-2 text-center font-medium flex items-center justify-center gap-1.5">
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                      <circle cx="7" cy="7" r="7" fill="#32EEE220" />
-                      <path d="M4 7l2 2 4-4" stroke="#32EEE2" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      <circle cx="7" cy="7" r="7" fill="#3B82F620" />
+                      <path d="M4 7l2 2 4-4" stroke="#3B82F6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
-                    <span style={{ color: '#32EEE2' }}>{row.vanna.value}</span>
+                    <span style={{ color: '#3B82F6' }}>{row.vanna.value}</span>
                   </span>
                   <span className="text-body-2 text-center flex items-center justify-center gap-1.5">
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">

@@ -168,7 +168,7 @@ export const FinaleScene: React.FC = () => {
               letterSpacing: -0.5,
             }}
           >
-            Leverage, Without Getting Liquidated
+            Leverage Anywhere, Without Getting Liquidated
           </span>
         </div>
 

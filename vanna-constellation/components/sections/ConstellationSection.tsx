@@ -8,18 +8,19 @@
 
 import { useState, useRef } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
+import Image from "next/image";
 import dynamic from "next/dynamic";
 
-const ThreeBackground = dynamic(() => import("./ThreeBackground"), {
-  ssr: false,
-  loading: () => <div className="absolute inset-0 bg-transparent" />,
-});
+// const ThreeBackground = dynamic(() => import("./ThreeBackground"), {
+//   ssr: false,
+//   loading: () => <div className="absolute inset-0 bg-transparent" />,
+// });
 
 const categoryFilters = [
   { id: "all", label: "All", color: "#703AE6" },
-  { id: "spot", label: "Spot / Swaps", color: "#32EEE2" },
+  { id: "spot", label: "Spot / Swaps", color: "#3B82F6" },
   { id: "perps", label: "Perps", color: "#9F7BEE" },
-  { id: "lending", label: "Lending", color: "#FC5457" },
+  { id: "options", label: "Options", color: "#FB7185" },
   { id: "yield", label: "Yield", color: "#E879F9" },
 ];
 
@@ -30,41 +31,64 @@ const protocolNodes = [
     name: "Uniswap",
     category: "spot",
     chains: ["Base", "Arbitrum", "Optimism"],
-    color: "#32EEE2",
+    color: "#3B82F6",
     actions: ["Swap", "Pool", "Liquidity"],
+    logo: "/icons/Uniswap.png",
   },
-  // {
-  //   id: "pancakeswap",
-  //   name: "PancakeSwap",
-  //   category: "spot",
-  //   chains: ["BNB Chain", "Arbitrum", "Base"],
-  //   color: "#32EEE2",
-  //   actions: ["Swap", "Pool", "Farm"],
-  // },
-  // {
-  //   id: "soroswap",
-  //   name: "Soroswap",
-  //   category: "spot",
-  //   chains: ["Stellar"],
-  //   color: "#32EEE2",
-  //   actions: ["Swap", "Pool"],
-  // },
+  {
+    id: "soroswap",
+    name: "Soroswap",
+    category: "spot",
+    chains: ["Stellar"],
+    color: "#3B82F6",
+    actions: ["Swap", "Pool"],
+    logo: "/icons/protocols/soroswap.png",
+  },
   {
     id: "aquarius",
     name: "Aquarius",
     category: "spot",
     chains: ["Stellar"],
-    color: "#32EEE2",
+    color: "#3B82F6",
     actions: ["Swap", "Liquidity Rewards"],
+    logo: "/icons/protocols/Aquarius.png",
+  },
+  {
+    id: "aerodrome",
+    name: "Aerodrome",
+    category: "spot",
+    chains: ["Base"],
+    color: "#3B82F6",
+    actions: ["Swap", "Pool", "Liquidity"],
+    logo: "/icons/protocols/Aerodrome.svg",
+  },
+  {
+    id: "hyperliquid-spot",
+    name: "HyperLiquid Spot",
+    category: "spot",
+    chains: ["Hyperliquid"],
+    color: "#3B82F6",
+    actions: ["Spot Trading"],
+    logo: "/icons/protocols/Hyperliquid.png",
+  },
+  {
+    id: "aster-spot",
+    name: "Aster Spot",
+    category: "spot",
+    chains: ["BNB"],
+    color: "#3B82F6",
+    actions: ["Spot Trading"],
+    logo: "/icons/protocols/aster.png",
   },
   /* ── Perps ── */
   {
     id: "hyperliquid",
     name: "Hyperliquid",
     category: "perps",
-    chains: ["Arbitrum"],
+    chains: ["Hyperliquid"],
     color: "#9F7BEE",
     actions: ["Long", "Short", "50x Leverage"],
+    logo: "/icons/protocols/Hyperliquid.png",
   },
   {
     id: "avantis",
@@ -73,33 +97,46 @@ const protocolNodes = [
     chains: ["Base"],
     color: "#9F7BEE",
     actions: ["Perps", "Leverage Trading"],
+    logo: "/icons/protocols/Avantis.png",
   },
-  /* ── Lending ── */
   {
-    id: "aave",
-    name: "Aave",
-    category: "lending",
-    chains: ["Base", "Arbitrum"],
-    color: "#FC5457",
-    actions: ["Lend", "Borrow"],
+    id: "aster-perp",
+    name: "Aster",
+    category: "perps",
+    chains: ["BNB"],
+    color: "#9F7BEE",
+    actions: ["Perps", "Leverage Trading"],
+    logo: "/icons/protocols/aster.png",
   },
+  /* ── Options ── */
+  {
+    id: "derive",
+    name: "Derive",
+    category: "options",
+    chains: ["Derive"],
+    color: "#FB7185",
+    actions: ["Options", "Structured Products"],
+    logo: "/icons/protocols/Derive.png",
+  },
+  /* ── Yield ── */
   {
     id: "morpho",
     name: "Morpho",
-    category: "lending",
+    category: "yield",
     chains: ["Base", "Optimism"],
-    color: "#FC5457",
-    actions: ["Optimized Lending"],
+    color: "#E879F9",
+    actions: ["Optimized Lending", "Yield"],
+    logo: "/icons/protocols/morpho.png",
   },
   {
     id: "blend",
     name: "Blend",
-    category: "lending",
+    category: "yield",
     chains: ["Stellar"],
-    color: "#FC5457",
-    actions: ["Lend", "Borrow"],
+    color: "#E879F9",
+    actions: ["Lend", "Borrow", "Yield"],
+    logo: "/icons/protocols/Blend.png",
   },
-  /* ── Yield Farming ── */
   {
     id: "katana",
     name: "Katana",
@@ -107,15 +144,8 @@ const protocolNodes = [
     chains: ["Katana"],
     color: "#E879F9",
     actions: ["Yield Farming", "LP"],
+    logo: "/icons/protocols/katana.png",
   },
-  // {
-  //   id: "pendle",
-  //   name: "Pendle",
-  //   category: "yield",
-  //   chains: ["Arbitrum", "Optimism"],
-  //   color: "#E879F9",
-  //   actions: ["Yield Trading", "Fixed Rates"],
-  // },
 ];
 
 function ProtocolCard({
@@ -141,7 +171,7 @@ function ProtocolCard({
       transition={{ duration: 0.4, delay: index * 0.03 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="relative rounded-xl p-5 cursor-pointer transition-shadow duration-300"
+      className="relative rounded-xl p-5 cursor-pointer transition-shadow duration-300 overflow-hidden"
       style={{
         backgroundColor: "var(--card-bg)",
         border: `1px solid ${hovered ? protocol.color + "40" : "var(--card-border)"}`,
@@ -150,20 +180,39 @@ function ProtocolCard({
           : "none",
       }}
     >
-      {/* Category dot */}
+      {/* Coming Soon tag */}
       <div
-        className="absolute top-3 right-3 w-2 h-2 rounded-full"
-        style={{ backgroundColor: protocol.color }}
-      />
+        className="absolute top-2.5 right-2.5 z-10 px-2 py-0.5 rounded-[8px] text-[9px] font-bold uppercase tracking-wider text-white"
+        style={{
+          background: "linear-gradient(135deg, #FC5457 10%, #703AE6 80%)",
+        }}
+      >
+        Coming Soon
+      </div>
 
-      {/* Icon placeholder */}
+      {/* Blur overlay */}
+      <div className="absolute inset-0  bg-white/2 dark:bg-black/2 z-1 rounded-xl pointer-events-none" />
+
+      {/* Protocol logo */}
       <div
-        className="w-11 h-11 rounded-xl flex items-center justify-center mb-3 text-lg font-bold text-white"
+        className="w-11 h-11 rounded-xl flex items-center justify-center mb-3 overflow-hidden"
         style={{
           background: `linear-gradient(135deg, ${protocol.color}CC, ${protocol.color})`,
         }}
       >
-        {protocol.name.charAt(0)}
+        {protocol.logo ? (
+          <Image
+            src={protocol.logo}
+            alt={protocol.name}
+            width={28}
+            height={28}
+            className="object-contain rounded-full"
+          />
+        ) : (
+          <span className="text-lg font-bold text-white">
+            {protocol.name.charAt(0)}
+          </span>
+        )}
       </div>
 
       <h4 className="text-h10 mb-1" style={{ color: "var(--text-primary)" }}>
@@ -234,7 +283,7 @@ export default function ConstellationSection() {
     >
       {/* Three.js Animated Background */}
       <div className="absolute inset-0 overflow-hidden opacity-20 dark:opacity-30 pointer-events-none">
-        <ThreeBackground />
+        {/* <ThreeBackground /> */}
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6">
@@ -247,7 +296,7 @@ export default function ConstellationSection() {
           transition={{ duration: 0.6 }}
         >
           <p className="text-violet-500 text-sm font-semibold tracking-[0.2em] uppercase mb-4">
-            11 Protocols. One Account.
+            13 Protocols. One Account.
           </p>
           <h2 className="text-h3 text-heading mb-4">
             Your Gateway to All of DeFi
@@ -314,7 +363,7 @@ export default function ConstellationSection() {
           transition={{ delay: 0.3 }}
         >
           {[
-            { label: "Protocols", value: "8" },
+            { label: "Protocols", value: "13" },
             { label: "Chains", value: "5" },
             { label: "Categories", value: "4" },
           ].map((stat) => (

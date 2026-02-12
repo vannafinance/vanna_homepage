@@ -146,8 +146,9 @@ interface StrategyBlock {
   category: "perps" | "spot" | "lending" | "pool" | "yield";
   icon: React.ReactNode;
   color: string;
-  leveragePct: number; // How much leverage this uses (0-100)
-  yieldPct: number; // APY contribution
+  riskScore: number; // 0-100 inherent risk of this block
+  capitalWeight: number; // relative capital allocation weight
+  yieldPct: number; // realistic APY contribution
   exposure: "long" | "short" | "neutral";
   capitalEfficiency: number; // multiplier e.g. 1x, 5x, 10x
 }
@@ -158,8 +159,9 @@ const allBlocks: StrategyBlock[] = [
     label: "Spot Buy",
     category: "spot",
     icon: <TrendUpIcon />,
-    color: "#32EEE2",
-    leveragePct: 10,
+    color: "#3B82F6",
+    riskScore: 25,
+    capitalWeight: 50,
     yieldPct: 0,
     exposure: "long",
     capitalEfficiency: 1,
@@ -170,8 +172,9 @@ const allBlocks: StrategyBlock[] = [
     category: "perps",
     icon: <ArrowUpIcon />,
     color: "#703AE6",
-    leveragePct: 60,
-    yieldPct: -2,
+    riskScore: 70,
+    capitalWeight: 20,
+    yieldPct: -6,
     exposure: "long",
     capitalEfficiency: 5,
   },
@@ -181,8 +184,9 @@ const allBlocks: StrategyBlock[] = [
     category: "perps",
     icon: <ArrowDownIcon />,
     color: "#703AE6",
-    leveragePct: 60,
-    yieldPct: -2,
+    riskScore: 65,
+    capitalWeight: 20,
+    yieldPct: 6,
     exposure: "short",
     capitalEfficiency: 5,
   },
@@ -192,8 +196,9 @@ const allBlocks: StrategyBlock[] = [
     category: "lending",
     icon: <BankIcon />,
     color: "#FC5457",
-    leveragePct: 5,
-    yieldPct: 8,
+    riskScore: 10,
+    capitalWeight: 40,
+    yieldPct: 4,
     exposure: "neutral",
     capitalEfficiency: 1,
   },
@@ -203,8 +208,9 @@ const allBlocks: StrategyBlock[] = [
     category: "lending",
     icon: <CoinsIcon />,
     color: "#FC5457",
-    leveragePct: 40,
-    yieldPct: -6,
+    riskScore: 40,
+    capitalWeight: 30,
+    yieldPct: -7,
     exposure: "neutral",
     capitalEfficiency: 3,
   },
@@ -214,8 +220,9 @@ const allBlocks: StrategyBlock[] = [
     category: "pool",
     icon: <DropletIcon />,
     color: "#FB7185",
-    leveragePct: 15,
-    yieldPct: 12,
+    riskScore: 30,
+    capitalWeight: 35,
+    yieldPct: 10,
     exposure: "neutral",
     capitalEfficiency: 2,
   },
@@ -225,8 +232,9 @@ const allBlocks: StrategyBlock[] = [
     category: "yield",
     icon: <SproutIcon />,
     color: "#E879F9",
-    leveragePct: 20,
-    yieldPct: 18,
+    riskScore: 40,
+    capitalWeight: 35,
+    yieldPct: 15,
     exposure: "neutral",
     capitalEfficiency: 2,
   },
@@ -243,32 +251,36 @@ const templates: StrategyTemplate[] = [
   {
     id: "basis",
     name: "Basis Trade",
-    description: "Market neutral. Profit from funding rates while hedged.",
+    description:
+      "Spot long + perp short = delta neutral. Earn funding rate yield with minimal directional risk.",
     blocks: ["spot-long", "perp-short"],
   },
   {
-    id: "delta-neutral",
-    name: "Delta Neutral Farm",
-    description: "Leveraged yield with zero directional risk.",
+    id: "protected-farm",
+    name: "Protected Farm",
+    description:
+      "Yield farming hedged with a perp short. Earn farm APY while neutralizing price exposure.",
     blocks: ["yield-farm", "perp-short"],
   },
   {
-    id: "lend-earn",
-    name: "Lend & Earn",
-    description: "Passive income from lending and liquidity provision.",
+    id: "yield-stack",
+    name: "Yield Stack",
+    description:
+      "Combine lending + LP pool for stacked passive yield. No directional exposure, low risk.",
     blocks: ["lend", "lp-pool"],
   },
   {
-    id: "leveraged-long",
-    name: "Leveraged Long",
-    description: "Amplified upside via perps + borrowed capital.",
-    blocks: ["perp-long", "borrow"],
+    id: "leveraged-yield",
+    name: "Leveraged Yield",
+    description:
+      "Borrow against collateral to farm yield. Higher returns but amplified risk.",
+    blocks: ["borrow", "yield-farm"],
   },
 ];
 
 const categoryColorMap: Record<string, string> = {
   perps: "#703AE6",
-  spot: "#32EEE2",
+  spot: "#3B82F6",
   lending: "#FC5457",
   pool: "#FB7185",
   yield: "#E879F9",
@@ -314,24 +326,49 @@ export default function StrategySection() {
     .filter(Boolean) as StrategyBlock[];
 
   /* Compute aggregate metrics */
-  const totals = selectedBlocks.reduce(
-    (acc, b) => ({
-      yieldPct: acc.yieldPct + b.yieldPct,
-      leveragePct: acc.leveragePct + b.leveragePct,
-      maxEfficiency: Math.max(acc.maxEfficiency, b.capitalEfficiency),
-    }),
-    { yieldPct: 0, leveragePct: 0, maxEfficiency: 0 },
+  const maxEfficiency = selectedBlocks.reduce(
+    (acc, b) => Math.max(acc, b.capitalEfficiency),
+    0,
   );
 
   /* Determine exposure type */
+  const hasSpotLong = activeBlocks.includes("spot-long");
+  const hasPerpLong = activeBlocks.includes("perp-long");
+  const hasPerpShort = activeBlocks.includes("perp-short");
+
   const longCount = selectedBlocks.filter((b) => b.exposure === "long").length;
   const shortCount = selectedBlocks.filter(
     (b) => b.exposure === "short",
   ).length;
+  const neutralCount = selectedBlocks.filter(
+    (b) => b.exposure === "neutral",
+  ).length;
+  const isHedged = longCount > 0 && shortCount > 0;
+  const isAllNeutral =
+    selectedBlocks.length > 0 && neutralCount === selectedBlocks.length;
+
+  /* Yield calculation with strategy-aware bonuses */
+  const baseYield = selectedBlocks.reduce((acc, b) => acc + b.yieldPct, 0);
+  const hasLend = activeBlocks.includes("lend");
+  const hasBorrow = activeBlocks.includes("borrow");
+  const hasLpPool = activeBlocks.includes("lp-pool");
+  const hasYieldFarm = activeBlocks.includes("yield-farm");
+
+  let strategyBonus = 0;
+  // Perp Long + Perp Short = funding rate arbitrage across protocols (~3% spread)
+  if (hasPerpLong && hasPerpShort) strategyBonus += 3;
+  // Spot Long + Perp Short = basis trade earns full funding rate (+4% on top)
+  else if (hasSpotLong && hasPerpShort) strategyBonus += 4;
+  // Lend + Borrow = recursive lending loop, borrowed capital re-deployed for extra yield
+  if (hasLend && hasBorrow) strategyBonus += 6;
+  // Borrow + LP/Farm = borrowed capital deployed into yield source (leveraged yield)
+  else if (hasBorrow && (hasLpPool || hasYieldFarm)) strategyBonus += 3;
+  const totalYield = baseYield + strategyBonus;
+
   const exposureLabel =
     selectedBlocks.length === 0
       ? "—"
-      : longCount > 0 && shortCount > 0
+      : isHedged
         ? "Hedged"
         : longCount > 0
           ? "Long"
@@ -341,18 +378,29 @@ export default function StrategySection() {
 
   const exposureColor =
     exposureLabel === "Hedged" || exposureLabel === "Neutral"
-      ? "#32EEE2"
+      ? "#3B82F6"
       : exposureLabel === "Long"
         ? "#703AE6"
         : exposureLabel === "Short"
           ? "#FC5457"
           : "var(--text-muted)";
 
-  /* Risk level based on leverage */
-  const riskPct = Math.min(100, totals.leveragePct);
-  const riskLabel = riskPct > 70 ? "High" : riskPct > 35 ? "Medium" : "Low";
+  /* Risk calculation: weighted average with hedge/neutral discounts */
+  const totalWeight = selectedBlocks.reduce((s, b) => s + b.capitalWeight, 0);
+  const weightedRisk =
+    totalWeight > 0
+      ? selectedBlocks.reduce(
+          (s, b) => s + b.riskScore * (b.capitalWeight / totalWeight),
+          0,
+        )
+      : 0;
+  // Hedged positions cancel directional risk → 0.4x multiplier
+  // All-neutral positions have no directional risk → 0.7x multiplier
+  const hedgeMultiplier = isHedged ? 0.4 : isAllNeutral ? 0.7 : 1;
+  const riskPct = Math.min(100, Math.round(weightedRisk * hedgeMultiplier));
+  const riskLabel = riskPct > 60 ? "High" : riskPct > 30 ? "Medium" : "Low";
   const riskColor =
-    riskPct > 70 ? "#FC5457" : riskPct > 35 ? "#703AE6" : "#32EEE2";
+    riskPct > 60 ? "#FC5457" : riskPct > 30 ? "#703AE6" : "#3B82F6";
 
   const selectTemplate = (template: StrategyTemplate) => {
     setActiveTemplate(template.id);
@@ -653,20 +701,20 @@ export default function StrategySection() {
             <div className="text-center mb-8">
               <motion.span
                 className="text-h3 font-mono block"
-                style={{ color: totals.yieldPct >= 0 ? "#32EEE2" : "#FC5457" }}
-                key={totals.yieldPct}
+                style={{ color: totalYield >= 0 ? "#3B82F6" : "#FC5457" }}
+                key={totalYield}
                 initial={{ scale: 1.2 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 200 }}
               >
-                {totals.yieldPct >= 0 ? "+" : ""}
-                {totals.yieldPct}%
+                {totalYield >= 0 ? "+" : ""}
+                {totalYield}%
               </motion.span>
               <span
                 className="text-body-3"
                 style={{ color: "var(--text-muted)" }}
               >
-                Estimated Annual Yield
+                Estimated ROI
               </span>
             </div>
 
@@ -690,9 +738,7 @@ export default function StrategySection() {
                 <MiniMetric
                   label="Leverage"
                   value={
-                    selectedBlocks.length === 0
-                      ? "—"
-                      : `${totals.maxEfficiency}x`
+                    selectedBlocks.length === 0 ? "—" : `${maxEfficiency}x`
                   }
                   color="#703AE6"
                 />
@@ -719,13 +765,9 @@ export default function StrategySection() {
                 </span>
                 <div className="space-y-2">
                   {selectedBlocks.map((block) => {
-                    const totalLeverage = selectedBlocks.reduce(
-                      (s, b) => s + b.leveragePct,
-                      0,
-                    );
                     const pct =
-                      totalLeverage > 0
-                        ? Math.round((block.leveragePct / totalLeverage) * 100)
+                      totalWeight > 0
+                        ? Math.round((block.capitalWeight / totalWeight) * 100)
                         : 0;
                     return (
                       <div key={block.id}>
@@ -782,7 +824,7 @@ export default function StrategySection() {
                   className="h-full rounded-full"
                   style={{
                     background:
-                      "linear-gradient(90deg, #32EEE2, #703AE6, #FC5457)",
+                      "linear-gradient(90deg, #3B82F6, #703AE6, #FC5457)",
                   }}
                   animate={{ width: `${riskPct}%` }}
                   transition={{ type: "spring", stiffness: 100 }}
@@ -791,6 +833,16 @@ export default function StrategySection() {
             </div>
           </motion.div>
         </div>
+
+        {/* Disclaimer */}
+        <p
+          className="text-center text-body-3 mt-10 max-w-2xl mx-auto"
+          style={{ color: "var(--text-muted)", opacity: 0.7 }}
+        >
+          Simulated yields are illustrative and based on historical DeFi market
+          averages. Actual returns vary with market conditions, protocol risks,
+          and liquidity. This is not financial advice — always DYOR.
+        </p>
       </div>
     </section>
   );

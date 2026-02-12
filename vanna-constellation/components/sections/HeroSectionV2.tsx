@@ -723,7 +723,7 @@ function DashboardMockup() {
                     </span>
                     <span
                       className="font-mono font-semibold"
-                      style={{ color: "#32EEE2" }}
+                      style={{ color: "#3B82F6" }}
                     >
                       1.65
                     </span>

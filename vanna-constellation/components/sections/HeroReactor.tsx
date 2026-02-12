@@ -4,10 +4,10 @@ import { useRef, useState, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 
-const ThreeBackground = dynamic(() => import("./ThreeBackground"), {
-  ssr: false,
-  loading: () => <div className="absolute inset-0 bg-transparent" />,
-});
+// const ThreeBackground = dynamic(() => import("./ThreeBackground"), {
+//   ssr: false,
+//   loading: () => <div className="absolute inset-0 bg-transparent" />,
+// });
 
 /* ── Feature pill inline SVG icons ── */
 function TargetIcon() {
@@ -115,7 +115,7 @@ export default function HeroReactor() {
     >
       {/* Three.js Animated Background */}
       <div className="absolute inset-0 overflow-hidden opacity-30 dark:opacity-40">
-        <ThreeBackground />
+        {/* <ThreeBackground /> */}
       </div>
 
       {/* Animated Background Elements */}
@@ -150,7 +150,7 @@ export default function HeroReactor() {
         />
 
         {/* Floating Geometric Shapes — hidden on mobile/tablet */}
-        <div
+        {/* <div
           className="hidden lg:block absolute top-1/4 right-1/4 w-32 h-32 border-2 rounded-sm opacity-[0.12] dark:opacity-[0.18] rotate-45 animate-pulse-glow"
           style={{ borderColor: "var(--color-violet-300)" }}
         />
@@ -167,7 +167,7 @@ export default function HeroReactor() {
             borderColor: "var(--color-electric-blue-400)",
             animationDelay: "1s",
           }}
-        />
+        /> */}
       </div>
 
       {/* Main Content Container */}
@@ -359,7 +359,7 @@ export default function HeroReactor() {
                 className="absolute -inset-px rounded-3xl opacity-30 pointer-events-none"
                 style={{
                   background:
-                    "linear-gradient(135deg, #703AE6, transparent, #32EEE2)",
+                    "linear-gradient(135deg, #703AE6, transparent, #3B82F6)",
                 }}
               />
               {/* Explainer video — autoplay loop with play/pause */}
@@ -488,7 +488,7 @@ export default function HeroReactor() {
               >
                 Capital Available
               </div>
-              <div className="text-sm font-bold" style={{ color: "#32EEE2" }}>
+              <div className="text-sm font-bold" style={{ color: "#3B82F6" }}>
                 $9,000
               </div>
             </motion.div>

@@ -10,12 +10,13 @@
 import { useRef } from "react";
 import { motion, useInView, useSpring, useTransform } from "framer-motion";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import dynamic from "next/dynamic";
 
-const ThreeBackground = dynamic(() => import("./ThreeBackground"), {
-  ssr: false,
-  loading: () => <div className="absolute inset-0 bg-transparent" />,
-});
+// const ThreeBackground = dynamic(() => import("./ThreeBackground"), {
+//   ssr: false,
+//   loading: () => <div className="absolute inset-0 bg-transparent" />,
+// });
 
 /* ── Animated Counter ───────────────────────────────────────────── */
 
@@ -69,28 +70,31 @@ const metrics = [
 /* ── Partners ───────────────────────────────────────────────────── */
 
 const partnersRow1 = [
-  "Stellar Foundation",
-  "Optimism",
-  "Base",
-  "Pivot Ventures",
-  "Draper University",
-  "Gitcoin",
-  "Arbitrum",
-  "Coinbase Ventures",
+  { name: "Stellar Foundation", logo: "/icons/protocols/stellar.webp" },
+  { name: "Pivot Ventures", logo: "/icons/protocols/pivotventures.jpg" },
+  { name: "Draper University", logo: "/icons/protocols/Drapper.svg" },
+  { name: "Gitcoin", logo: "/icons/protocols/Gitcoin.png" },
 ];
 
 const partnersRow2 = [
-  "Aave",
-  "Uniswap",
-  "Hyperliquid",
-  "Pendle",
-  "GMX",
-  "Morpho",
-  "dYdX",
-  "Compound",
+  { name: "Uniswap", logo: "/icons/Uniswap.png" },
+  { name: "Aquarius", logo: "/icons/protocols/Aquarius.png" },
+  { name: "Aster", logo: "/icons/protocols/aster.png" },
+  { name: "Soroswap", logo: "/icons/protocols/soroswap.png" },
+  { name: "Avantis", logo: "/icons/protocols/Avantis.png" },
+  { name: "Derive", logo: "/icons/protocols/Derive.png" },
+  { name: "Katana", logo: "/icons/protocols/katana.png" },
+  { name: "Aerodrome", logo: "/icons/protocols/Aerodrome.svg" },
+  { name: "Blend", logo: "/icons/protocols/Blend.png" },
+  { name: "Hyperliquid", logo: "/icons/protocols/Hyperliquid.png" },
+  { name: "Morpho", logo: "/icons/protocols/morpho.png" },
+  { name: "Optimism", logo: "" },
+  { name: "Base", logo: "" },
+  { name: "Stellar", logo: "" },
+  { name: "BNB", logo: "" },
 ];
 
-function PartnerLogo({ name }: { name: string }) {
+function PartnerLogo({ name, logo }: { name: string; logo?: string }) {
   return (
     <div
       className="inline-flex items-center gap-2 px-6 py-3 mx-3 rounded-xl shrink-0 transition-all duration-300 hover:scale-105 group"
@@ -100,13 +104,23 @@ function PartnerLogo({ name }: { name: string }) {
       }}
     >
       <div
-        className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold transition-colors duration-300"
+        className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold transition-colors duration-300 overflow-hidden"
         style={{
           backgroundColor: "var(--surface-alt)",
           color: "var(--text-muted)",
         }}
       >
-        {name.charAt(0)}
+        {logo ? (
+          <Image
+            src={logo}
+            alt={name}
+            width={20}
+            height={20}
+            className="object-contain rounded-full"
+          />
+        ) : (
+          name.charAt(0)
+        )}
       </div>
       <span
         className="text-body-2 font-medium whitespace-nowrap transition-colors duration-300"
@@ -122,14 +136,14 @@ function PartnerLogo({ name }: { name: string }) {
 
 const bentoItems = [
   { name: "Hyperliquid", category: "Perps", color: "#9F7BEE" },
-  { name: "Uniswap", category: "Spot", color: "#32EEE2" },
+  { name: "Uniswap", category: "Spot", color: "#3B82F6" },
   { name: "Derive", category: "Options", color: "#FB7185" },
   { name: "Pendle", category: "Yield", color: "#E879F9" },
   { name: "Aave", category: "Lending", color: "#FC5457" },
   { name: "GMX", category: "Perps", color: "#9F7BEE" },
   { name: "dYdX", category: "Perps", color: "#9F7BEE" },
   { name: "Morpho", category: "Lending", color: "#FC5457" },
-  { name: "Curve", category: "Spot", color: "#32EEE2" },
+  { name: "Curve", category: "Spot", color: "#3B82F6" },
   { name: "Yearn", category: "Yield", color: "#E879F9" },
   { name: "Compound", category: "Lending", color: "#FC5457" },
   { name: "Lyra", category: "Options", color: "#FB7185" },
@@ -148,7 +162,7 @@ export default function SocialProofSection() {
     >
       {/* Three.js Animated Background */}
       <div className="absolute inset-0 overflow-hidden opacity-20 dark:opacity-30 pointer-events-none">
-        <ThreeBackground />
+        {/* <ThreeBackground /> */}
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6">
@@ -237,8 +251,12 @@ export default function SocialProofSection() {
             />
 
             <div className="flex animate-marquee hover:[animation-play-state:paused]">
-              {[...partnersRow1, ...partnersRow1].map((name, i) => (
-                <PartnerLogo key={`r1-${i}`} name={name} />
+              {[...partnersRow1, ...partnersRow1].map((partner, i) => (
+                <PartnerLogo
+                  key={`r1-${i}`}
+                  name={partner.name}
+                  logo={partner.logo}
+                />
               ))}
             </div>
           </div>
@@ -266,8 +284,12 @@ export default function SocialProofSection() {
                 animation: "marquee 40s linear infinite reverse",
               }}
             >
-              {[...partnersRow2, ...partnersRow2].map((name, i) => (
-                <PartnerLogo key={`r2-${i}`} name={name} />
+              {[...partnersRow2, ...partnersRow2].map((partner, i) => (
+                <PartnerLogo
+                  key={`r2-${i}`}
+                  name={partner.name}
+                  logo={partner.logo}
+                />
               ))}
             </div>
           </div>

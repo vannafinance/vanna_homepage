@@ -102,7 +102,7 @@ function CreditCard({ isFlipped, onFlip }: { isFlipped: boolean; onFlip: () => v
           {/* Gradient edge accent */}
           <div
             className="absolute top-0 left-0 right-0 h-1"
-            style={{ background: 'linear-gradient(90deg, #FC5457, #703AE6, #32EEE2)' }}
+            style={{ background: 'linear-gradient(90deg, #FC5457, #703AE6, #3B82F6)' }}
           />
 
           {/* Card content */}
@@ -148,7 +148,7 @@ function CreditCard({ isFlipped, onFlip }: { isFlipped: boolean; onFlip: () => v
                 <div className="text-[9px] tracking-wider mb-0.5" style={{ color: 'rgba(255,255,255,0.3)' }}>
                   CREDIT LIMIT
                 </div>
-                <div className="font-mono text-sm font-semibold" style={{ color: '#32EEE2' }}>
+                <div className="font-mono text-sm font-semibold" style={{ color: '#3B82F6' }}>
                   $100,000
                 </div>
               </div>

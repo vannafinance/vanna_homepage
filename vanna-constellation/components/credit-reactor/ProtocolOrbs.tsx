@@ -164,8 +164,8 @@ function OrbMesh({ protocol, index }: OrbMeshProps) {
     >
       <sphereGeometry args={[0.3, 24, 24]} />
       <meshStandardMaterial
-        color="#32EEE2" // Electric Blue
-        emissive="#32EEE2"
+        color="#3B82F6" // Electric Blue
+        emissive="#3B82F6"
         emissiveIntensity={hovered ? 1.5 : 0.8}
         metalness={0.3}
         roughness={0.4}

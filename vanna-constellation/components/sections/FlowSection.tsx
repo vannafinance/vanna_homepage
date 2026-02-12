@@ -4,10 +4,10 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import dynamic from "next/dynamic";
 
-const ThreeBackground = dynamic(() => import("./ThreeBackground"), {
-  ssr: false,
-  loading: () => <div className="absolute inset-0 bg-transparent" />,
-});
+// const ThreeBackground = dynamic(() => import("./ThreeBackground"), {
+//   ssr: false,
+//   loading: () => <div className="absolute inset-0 bg-transparent" />,
+// });
 
 const steps = [
   {
@@ -193,7 +193,7 @@ export default function FlowSection() {
     >
       {/* Three.js Animated Background */}
       <div className="absolute inset-0 overflow-hidden opacity-20 dark:opacity-30 pointer-events-none">
-        <ThreeBackground />
+        {/* <ThreeBackground /> */}
       </div>
 
       {/* Subtle background glow */}

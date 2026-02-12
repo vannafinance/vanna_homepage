@@ -21,7 +21,7 @@ const greeks = [
     max: 3,
     label: '0.8',
     sublabel: 'Low acceleration',
-    color: '#32EEE2',
+    color: '#3B82F6',
     gradient: 'from-electric-blue-500 to-electric-blue-400',
   },
   {
@@ -234,7 +234,7 @@ function HealthFactor({ isInView }: { isInView: boolean }) {
         <motion.div
           className="absolute inset-y-0 left-0 rounded-full"
           style={{
-            background: 'linear-gradient(90deg, #32EEE2, #703AE6, #FC5457)',
+            background: 'linear-gradient(90deg, #3B82F6, #703AE6, #FC5457)',
           }}
           initial={{ width: '0%' }}
           animate={isInView ? { width: `${progress * 100}%` } : {}}
@@ -260,7 +260,7 @@ function HealthFactor({ isInView }: { isInView: boolean }) {
 function AlertsPanel({ isInView }: { isInView: boolean }) {
   const alerts = [
     { type: 'warning', message: 'Delta exceeds threshold (+12.5 > 10)', time: '2m ago', color: '#FC5457' },
-    { type: 'info', message: 'Health Factor stable at 1.45', time: '5m ago', color: '#32EEE2' },
+    { type: 'info', message: 'Health Factor stable at 1.45', time: '5m ago', color: '#3B82F6' },
     { type: 'info', message: 'Theta decay accelerating on position #3', time: '12m ago', color: '#703AE6' },
   ];
 

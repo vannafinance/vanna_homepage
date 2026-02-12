@@ -34,7 +34,7 @@ export default function ThreeBackground() {
         <pointLight position={[10, 10, 10]} />
         <FloatingGeometry position={[-2, 0, 0]} color="#703AE6" />
         <FloatingGeometry position={[2, 1, -1]} color="#FC5457" />
-        <FloatingGeometry position={[0, -1, -2]} color="#32EEE2" />
+        <FloatingGeometry position={[0, -1, -2]} color="#3B82F6" />
       </Canvas>
     </div>
   );
