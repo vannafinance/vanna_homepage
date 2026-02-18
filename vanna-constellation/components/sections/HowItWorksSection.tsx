@@ -299,7 +299,7 @@ function DepositWidget({
         }}
       >
         <h4
-          className="text-lg font-semibold mb-4"
+          className="text-lg font-semibold mb-4 "
           style={{ color: "var(--text-primary)" }}
         >
           Deposit to Vanna
@@ -380,7 +380,7 @@ function DepositWidget({
         {/* Deposit Button */}
         <button
           onClick={() => setDeposited(true)}
-          className="w-full py-3 rounded-xl text-white font-semibold text-sm bg-vanna-gradient hover:opacity-90 transition-opacity mb-4"
+          className="w-full py-3 rounded-xl text-white font-semibold text-sm bg-vanna-gradient hover:opacity-90 transition-opacity mb-4 cursor-pointer"
         >
           Deposit to Vanna
         </button>
@@ -406,7 +406,7 @@ function DepositWidget({
                   delay: 0,
                 },
                 {
-                  label: `${deposit.toLocaleString()} ${depositAssets[asset].symbol} deposited`,
+                  label: `$${deposit.toLocaleString()} worth of ${depositAssets[asset].symbol} deposited`,
                   delay: 0.3,
                 },
                 {
@@ -704,7 +704,10 @@ function CalculatorWidget({
                     {leverage}x
                   </span>
                 </div>
-                <div className="flex justify-between items-center">
+                {/* <div
+                  className="flex justify-between items-center "
+                  style={{ color: "var(--text-secondary)" }}
+                >
                   <span
                     className="text-sm"
                     style={{ color: "var(--text-secondary)" }}
@@ -714,7 +717,8 @@ function CalculatorWidget({
                   <span className="text-sm text-electric-blue-500 font-mono font-semibold">
                     ${estimatedYield}
                   </span>
-                </div>
+                  you have to only pay Borrowed APR
+                </div> */}
               </div>
             </div>
           </div>
@@ -1098,7 +1102,7 @@ function StrategyWidget() {
           <button
             key={t.id}
             onClick={() => selectTemplate(t)}
-            className={`px-4 py-2 rounded-xl text-xs font-medium transition-all duration-200 border ${
+            className={`px-4 py-2 rounded-xl text-xs font-medium transition-all duration-200 border cursor-pointer ${
               activeTemplate === t.id
                 ? "border-violet-500 bg-violet-500/10 text-violet-500"
                 : ""

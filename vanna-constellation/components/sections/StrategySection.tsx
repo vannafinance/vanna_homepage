@@ -454,7 +454,7 @@ export default function StrategySection() {
             <button
               key={t.id}
               onClick={() => selectTemplate(t)}
-              className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 border ${
+              className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 border cursor-pointer ${
                 activeTemplate === t.id
                   ? "border-violet-500 bg-violet-500/10 text-violet-500"
                   : ""

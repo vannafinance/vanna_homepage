@@ -253,7 +253,7 @@ export default function HeroReactor() {
             >
               Borrow{" "}
               <strong style={{ color: "#703AE6" }}>
-                10× undercollateralized credit
+                upto 10× undercollateralized credit
               </strong>{" "}
               upfront. Deploy across perps, spot, lending, and yield farming—all
               from one unified margin account.
@@ -266,8 +266,8 @@ export default function HeroReactor() {
             >
               {[
                 { value: "10×", label: "Leverage" },
-                { value: "8+", label: "Protocols" },
-                { value: "5", label: "Chains" },
+                { value: "12", label: "Protocols" },
+                { value: "6", label: "Chains" },
               ].map((stat) => (
                 <div key={stat.label}>
                   <div className="text-h5 lg:text-h5 xl:text-h4 text-gradient">
@@ -294,6 +294,7 @@ export default function HeroReactor() {
                 whileHover={{
                   scale: 1.03,
                   boxShadow: "0 12px 40px rgba(112, 58, 230, 0.35)",
+                  cursor: "not-allowed",
                 }}
                 whileTap={{ scale: 0.97 }}
               >
@@ -305,9 +306,37 @@ export default function HeroReactor() {
                   color: "var(--text-primary)",
                   border: "2px solid var(--border-default)",
                   backgroundColor: "var(--card-bg)",
+                  cursor: "pointer",
                 }}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
+                onClick={() => {
+                  const section = document.getElementById("how-it-works");
+                  if (!section) return;
+                  const sectionTop =
+                    section.getBoundingClientRect().top + window.scrollY;
+                  const scrollableDistance =
+                    section.offsetHeight - window.innerHeight;
+                  const target = sectionTop + scrollableDistance * 0.63;
+                  // Custom smooth scroll — browser native can't cover long distances
+                  const start = window.scrollY;
+                  const distance = target - start;
+                  const duration = 1400;
+                  const startTime = performance.now();
+                  const ease = (t: number) =>
+                    t < 0.5
+                      ? 4 * t * t * t
+                      : 1 - Math.pow(-2 * t + 2, 3) / 2;
+                  const step = (now: number) => {
+                    const progress = Math.min(
+                      (now - startTime) / duration,
+                      1,
+                    );
+                    window.scrollTo(0, start + distance * ease(progress));
+                    if (progress < 1) requestAnimationFrame(step);
+                  };
+                  requestAnimationFrame(step);
+                }}
               >
                 View Strategies
               </motion.button>

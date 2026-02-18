@@ -288,7 +288,7 @@ export default function ConstellationSection() {
           transition={{ duration: 0.6 }}
         >
           <p className="text-violet-500 text-sm font-semibold tracking-[0.2em] uppercase mb-4">
-            13 Protocols. One Account.
+            12 Protocols. One Account.
           </p>
           <h2 className="text-h3 text-heading mb-4">
             Your Gateway to All of DeFi
@@ -355,8 +355,8 @@ export default function ConstellationSection() {
           transition={{ delay: 0.3 }}
         >
           {[
-            { label: "Protocols", value: "13" },
-            { label: "Chains", value: "7" },
+            { label: "Protocols", value: "12" },
+            { label: "Chains", value: "6" },
             { label: "Categories", value: "4" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
