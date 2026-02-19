@@ -29,17 +29,33 @@ export const metadata: Metadata = {
     "margin trading",
     "Vanna Finance",
   ],
+  icons: {
+    icon: [
+      { url: "/icons/vanna-icon.png", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icons/vanna-icon.png", type: "image/png" },
+    ],
+  },
   openGraph: {
     title: "Vanna Finance | Borrow 10x. Trade Anywhere.",
     description:
       "Composable credit infrastructure for DeFi. Deploy leverage across perps, options, spot, and yield farming.",
     type: "website",
     locale: "en_US",
+    siteName: "Vanna Finance",
+    images: [
+      {
+        url: "/icons/vanna.png",
+        alt: "Vanna Finance - Composable Credit for DeFi",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Vanna Finance | Composable Credit for DeFi",
     description: "Borrow 10x. Trade Anywhere. Professional-grade DeFi.",
+    images: ["/icons/vanna.png"],
   },
 };
 
@@ -58,7 +74,7 @@ export default function RootLayout({
               (function() {
                 try {
                   var theme = localStorage.getItem('vanna-theme');
-                  if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  if (theme !== 'light') {
                     document.documentElement.classList.add('dark');
                   }
                 } catch(e) {}
