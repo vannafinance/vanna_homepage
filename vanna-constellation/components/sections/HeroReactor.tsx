@@ -46,7 +46,7 @@ function ZapIcon() {
 }
 
 const featurePills = [
-  { icon: <TargetIcon />, text: "Unified Margin" },
+  { icon: <TargetIcon />, text: "Unified Cross Margin" },
   { icon: <ZapIcon />, text: "Instant Leverage" },
 ];
 
@@ -255,8 +255,11 @@ export default function HeroReactor() {
               <strong style={{ color: "#703AE6" }}>
                 upto 10× undercollateralized credit
               </strong>{" "}
-              upfront. Deploy across perps, spot, lending, and yield farming—all
-              from one unified margin account.
+              upfront.{" "}
+              <strong style={{ color: "#703AE6" }}>
+                Deploy across perps, spot, lending, and yield farming
+              </strong>
+              —all from one unified margin account.
             </motion.p>
 
             {/* Stats Row */}
